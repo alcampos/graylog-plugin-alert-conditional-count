@@ -1,0 +1,39 @@
+sudo: required
+dist: trusty
+language: java
+jdk:
+- oraclejdk8
+addons:
+  apt:
+    packages:
+    - rpm
+before_install:
+- sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g'
+  ~/.m2/settings.xml
+- git clone --depth=50 --branch=2.0 https://github.com/Graylog2/graylog2-server.git  /home/travis/build/alcampos/graylog2-server
+- cd /home/travis/build/alcampos/graylog2-server; git checkout tags/2.3.0;
+  mvn install -DskipTests=true -Dmaven.javadoc.skip=true; cd /home/travis/build/alcampos/graylog-plugin-alert-conditional-count
+- echo "finished before_install"
+- pwd
+- ls
+before_deploy:
+- mvn jdeb:jdeb && export RELEASE_DEB_FILE=$(ls target/*.deb)
+- mvn rpm:rpm && export RELEASE_RPM_FILE=$(find target/ -name '*.rpm' | tail -1)
+- rm -f target/original-*.jar
+- export RELEASE_PKG_FILE=$(ls target/*.jar)
+- echo "Deploying release to GitHub releases with the following files:"
+- echo "$RELEASE_PKG_FILE"
+- echo "$RELEASE_DEB_FILE"
+- echo "$RELEASE_RPM_FILE"
+deploy:
+  provider: releases
+  api_key:
+    secure: rYYAJOi7RQrQiWf0QjpYpt9IjBrjqPiV5EzYhncn2BQrrsv+f4/YbP2Af8a+FPDTuuNuy+bO7i1F6y0w1El5YkJ/M7DtQGKQPz3J86E3onrjxaXGBuM9kwVf4hPNnluw0knY+ojXwGXcp+ieOk0wmU/G5mns+bPiVM9i3WIXyCHhRpz0Ezjh7wk4Sws6db/U5AxT5RrTCLm4W5vDZg8orOAWNO5wgxDV0EV6s24zOM/Gd/LPTkYH/eKrkgU/TnKpoy4wAcazG2Sse4h8U61TxmWUMf0lW70zwvazHZVS/zOqo/N8A5UOq7iCdK7d01kp7PQWTJvLq7fbzvNsATnUyLm1h+a3BLbSG86nHUUm3eERrMUBdhtzz+V3HIgYpf9rqJml0LxKPWiAE5hFXqYbgUKohcBFM0vQudhEWkHpUYwwd4DPcJQvYOQZOYCQQBqZbpNhV5/vowDncHk2bIYhEHPJxKoVBPR2HP4tOWACnPInWg9HplsUimYhFlXMpng/tb5kmEGWU+ulXtLaA4Vlj3KogaVABv3kobAV9DGomsdJm1+SIg6YGXb2+V1dwEO1i20rY+T1vktzznnTrDYXdQKwzgQnRIkfpsMGAY1QLfLFP8JujXfzeK0pW/EqQo7ttVM2huw5BQnDnmCHdj7/lU7FJ8yA0W2r+00+Z1vTunM=
+  file:
+    - "${RELEASE_PKG_FILE}"
+    - "${RELEASE_DEB_FILE}"
+    - "${RELEASE_RPM_FILE}"
+  skip_cleanup: true
+  on:
+    repo: alcampos/graylog-plugin-alert-condition-count
+    tags: true
