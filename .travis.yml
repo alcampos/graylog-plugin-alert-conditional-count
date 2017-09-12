@@ -35,5 +35,5 @@ deploy:
     - "${RELEASE_RPM_FILE}"
   skip_cleanup: true
   on:
-    repo: alcampos/graylog-plugin-alert-condition-count
+    repo: alcampos/graylog-plugin-alert-conditional-count
     tags: true
