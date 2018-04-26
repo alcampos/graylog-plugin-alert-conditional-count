@@ -165,7 +165,7 @@ public class ConditionalCountAlertCondition extends AbstractAlertCondition {
             if (triggered) {
                 final List<MessageSummary> summaries = Lists.newArrayList();
                 if (getBacklog() > 0) {
-                    final SearchResult backlogResult = searches.search("*", filter,
+                    final SearchResult backlogResult = searches.search(query, filter,
                         range, getBacklog(), 0, new Sorting(Message.FIELD_TIMESTAMP, Sorting.Direction.DESC));
                     for (ResultMessage resultMessage : backlogResult.getResults()) {
                         final Message msg = resultMessage.getMessage();
