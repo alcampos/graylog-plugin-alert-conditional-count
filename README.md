@@ -24,9 +24,11 @@ Usage
 First we have to select the alert type **Message Conditional Count Alert Condition**
 
 
-![Alert Condition Selection]()
+![Alert Condition Selection](https://github.com/alcampos/graylog-plugin-alert-conditional-count/blob/master/media/alert_condition.png)
 
-![Alert Condition Fields]()
+And then we have to fill al the fields. The only field that is diferent is the **query** field, that let you put a custom query. You have to put the same query that you look for in the search tab.
+
+![Alert Condition Fields](https://github.com/alcampos/graylog-plugin-alert-conditional-count/blob/master/media/alert_condition_description.png)
 
 
 Getting started
